@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaulted - Memory Archive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        /* Form Styles */
+        .memory-form {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .memory-form h2 {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #34495e;
+            font-size: 0.95rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="date"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px 0;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .form-group.error input,
+        .form-group.error textarea {
+            border-color: #e74c3c;
+        }
+
+        .btn {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Memories Section */
+        .memories-section {
+            margin-top: 20px;
+        }
+
+        .memories-section h2 {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .memories-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .memory-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .memory-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .memory-content {
+            padding: 20px;
+        }
+
+        .memory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .memory-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .memory-date {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+
+        .memory-description {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .no-memories {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-memories p {
+            font-size: 1.1rem;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            margin-top: 10px;
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .image-preview.show {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 600px) {
+            .memories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 599px) {
+            .container {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .memory-form {
+                padding: 20px;
+            }
+
+            .memory-image {
+                height: 180px;
+            }
+
+            .memory-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Vaulted</h1>
+            <p>Your personal memory archive</p>
+        </header>
+
+        <section class="memory-form">
+            <h2>Add a New Memory</h2>
+            <form id="memoryForm">
+                <div class="form-group">
+                    <label for="title">Title *</label>
+                    <input type="text" id="title" name="title" placeholder="Enter a title for your memory">
+                    <span class="error-message" id="titleError">Please enter a title</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date *</label>
+                    <input type="date" id="date" name="date">
+                    <span class="error-message" id="dateError">Please select a date</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" placeholder="Describe your memory..."></textarea>
+                    <span class="error-message" id="descriptionError">Please enter a description</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Image (optional)</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                    <img id="imagePreview" class="image-preview" alt="Image preview">
+                    <span class="error-message" id="imageError">Please select a valid image file</span>
+                </div>
+
+                <button type="submit" class="btn">Save Memory</button>
+            </form>
+        </section>
+
+        <section class="memories-section">
+            <h2>Your Memories</h2>
+            <div id="memoriesContainer" class="memories-grid">
+                <!-- Memories will be rendered here -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // DOM Elements
+        const memoryForm = document.getElementById('memoryForm');
+        const memoriesContainer = document.getElementById('memoriesContainer');
+        const imageInput = document.getElementById('image');
+        const imagePreview = document.getElementById('imagePreview');
+
+        // Storage key
+        const STORAGE_KEY = 'vaulted_memories';
+
+        // Load memories on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMemories();
+            setDefaultDate();
+        });
+
+        // Set default date to today
+        function setDefaultDate() {
+            const dateInput = document.getElementById('date');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+
+        // Image preview functionality
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (!file.type.startsWith('image/')) {
+                    showError('image', 'Please select a valid image file');
+                    imageInput.value = '';
+                    imagePreview.classList.remove('show');
+                    return;
+                }
+                clearError('image');
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imagePreview.src = event.target.result;
+                    imagePreview.classList.add('show');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.classList.remove('show');
+            }
+        });
+
+        // Form submission
+        memoryForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            const title = document.getElementById('title').value.trim();
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value.trim();
+            const imageFile = imageInput.files[0];
+
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    saveMemory(title, date, description, event.target.result);
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                saveMemory(title, date, description, null);
+            }
+        });
+
+        // Validate form inputs
+        function validateForm() {
+            let isValid = true;
+
+            const title = document.getElementById('title').value.trim();
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value.trim();
+
+            // Title validation
+            if (!title) {
+                showError('title', 'Please enter a title');
+                isValid = false;
+            } else if (title.length > 100) {
+                showError('title', 'Title must be less than 100 characters');
+                isValid = false;
+            } else {
+                clearError('title');
+            }
+
+            // Date validation
+            if (!date) {
+                showError('date', 'Please select a date');
+                isValid = false;
+            } else {
+                clearError('date');
+            }
+
+            // Description validation
+            if (!description) {
+                showError('description', 'Please enter a description');
+                isValid = false;
+            } else if (description.length > 1000) {
+                showError('description', 'Description must be less than 1000 characters');
+                isValid = false;
+            } else {
+                clearError('description');
+            }
+
+            return isValid;
+        }
+
+        // Show error message
+        function showError(field, message) {
+            const formGroup = document.getElementById(field).closest('.form-group');
+            const errorElement = document.getElementById(field + 'Error');
+            formGroup.classList.add('error');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        // Clear error message
+        function clearError(field) {
+            const formGroup = document.getElementById(field).closest('.form-group');
+            const errorElement = document.getElementById(field + 'Error');
+            formGroup.classList.remove('error');
+            errorElement.classList.remove('show');
+        }
+
+        // Save memory to localStorage
+        function saveMemory(title, date, description, imageBase64) {
+            const memories = getMemories();
+
+            const memory = {
+                id: Date.now().toString(),
+                title: title,
+                date: date,
+                description: description,
+                image: imageBase64,
+                createdAt: new Date().toISOString()
+            };
+
+            memories.unshift(memory);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(memories));
+
+            // Reset form
+            memoryForm.reset();
+            imagePreview.classList.remove('show');
+            setDefaultDate();
+
+            // Re-render memories
+            renderMemories();
+        }
+
+        // Get memories from localStorage
+        function getMemories() {
+            const memoriesJson = localStorage.getItem(STORAGE_KEY);
+            return memoriesJson ? JSON.parse(memoriesJson) : [];
+        }
+
+        // Delete memory
+        function deleteMemory(id) {
+            if (!confirm('Are you sure you want to delete this memory?')) {
+                return;
+            }
+
+            const memories = getMemories();
+            const filteredMemories = memories.filter(memory => memory.id !== id);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredMemories));
+            renderMemories();
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render memories to the DOM
+        function renderMemories() {
+            const memories = getMemories();
+
+            if (memories.length === 0) {
+                memoriesContainer.innerHTML = `
+                    <div class="no-memories">
+                        <p>No memories yet. Add your first memory above!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            memoriesContainer.innerHTML = memories.map(memory => `
+                <div class="memory-card">
+                    ${memory.image ? `<img src="${memory.image}" alt="${escapeHtml(memory.title)}" class="memory-image">` : ''}
+                    <div class="memory-content">
+                        <div class="memory-header">
+                            <h3 class="memory-title">${escapeHtml(memory.title)}</h3>
+                            <span class="memory-date">${formatDate(memory.date)}</span>
+                        </div>
+                        <p class="memory-description">${escapeHtml(memory.description)}</p>
+                        <button class="delete-btn" onclick="deleteMemory('${memory.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
