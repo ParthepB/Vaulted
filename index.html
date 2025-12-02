@@ -500,6 +500,16 @@
             return div.innerHTML;
         }
 
+        // Validate Base64 image data URL
+        function isValidImageDataUrl(dataUrl) {
+            if (!dataUrl || typeof dataUrl !== 'string') {
+                return false;
+            }
+            // Only allow data URLs with valid image MIME types
+            const validPattern = /^data:image\/(png|jpeg|jpg|gif|webp|svg\+xml);base64,[A-Za-z0-9+/=]+$/;
+            return validPattern.test(dataUrl);
+        }
+
         // Render memories to the DOM
         function renderMemories() {
             const memories = getMemories();
@@ -513,20 +523,34 @@
                 return;
             }
 
-            memoriesContainer.innerHTML = memories.map(memory => `
-                <div class="memory-card">
-                    ${memory.image ? `<img src="${memory.image}" alt="${escapeHtml(memory.title)}" class="memory-image">` : ''}
+            memoriesContainer.innerHTML = memories.map(memory => {
+                const safeImage = memory.image && isValidImageDataUrl(memory.image) ? memory.image : null;
+                return `
+                <div class="memory-card" data-memory-id="${escapeHtml(memory.id)}">
+                    ${safeImage ? `<img src="${safeImage}" alt="${escapeHtml(memory.title)}" class="memory-image">` : ''}
                     <div class="memory-content">
                         <div class="memory-header">
                             <h3 class="memory-title">${escapeHtml(memory.title)}</h3>
                             <span class="memory-date">${formatDate(memory.date)}</span>
                         </div>
                         <p class="memory-description">${escapeHtml(memory.description)}</p>
-                        <button class="delete-btn" onclick="deleteMemory('${memory.id}')">Delete</button>
+                        <button class="delete-btn">Delete</button>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
+
+        // Event delegation for delete buttons
+        memoriesContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                const memoryCard = e.target.closest('.memory-card');
+                if (memoryCard) {
+                    const memoryId = memoryCard.dataset.memoryId;
+                    deleteMemory(memoryId);
+                }
+            }
+        });
     </script>
 </body>
 </html>
