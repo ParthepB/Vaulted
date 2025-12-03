@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Relive — Vaulted</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="relive.css">
+</head>
+<body>
+    <div class="site-wrap">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a class="brand" href="index.html">Vaulted</a>
+            </div>
+            <div class="nav-center">
+                <a href="index.html">Home</a>
+                <a href="relive.html">Relive</a>
+                <a href="index.html#about">About</a>
+            </div>
+            <div class="nav-right">
+                <a href="index.html#contact" class="btn small">Contact</a>
+            </div>
+        </nav>
+
+        <header>
+            <h1>Relive</h1>
+            <p>Watch your memories animate</p>
+            <p>
+                <a href="index.html" class="btn" style="width:auto;display:inline-block;margin-right:8px;">Back</a>
+                <button id="startBtn" class="btn" style="width:auto;display:inline-block;">Start</button>
+                <button id="pauseBtn" class="btn" style="width:auto;display:inline-block;margin-left:8px;">Pause</button>
+                <button id="shuffleBtn" class="btn" style="width:auto;display:inline-block;margin-left:8px;">Shuffle</button>
+                <button id="fullscreenBtn" class="btn" style="width:auto;display:inline-block;margin-left:8px;">Fullscreen</button>
+            </p>
+            <p style="margin-top:8px;">
+                Speed:
+                <select id="speedSelect">
+                    <option value="3500">Normal</option>
+                    <option value="2000">Fast</option>
+                    <option value="5000">Slow</option>
+                </select>
+                <span style="margin-left:8px;">Progress:</span>
+                <div id="progressWrap" style="display:inline-block;vertical-align:middle;width:140px;height:8px;background:#eee;border-radius:8px;margin-left:8px;overflow:hidden;">
+                    <div id="progressBar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--p3),var(--p5));"></div>
+                </div>
+            </p>
+        </header>
+
+        <main id="reliveRoot">
+            <div id="slideshow" class="slideshow">
+                <!-- Slides injected here -->
+            </div>
+            <div id="emptyState" class="no-memories" style="display:none;margin-top:20px;">No memories yet. Head back to add some.</div>
+
+            <div class="relive-controls" style="margin-top:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                <label style="font-size:0.9rem;color:var(--muted);">Duration</label>
+                <input id="durationRange" type="range" min="1500" max="8000" step="250" value="3500">
+                <span id="durationLabel" style="min-width:64px;text-align:center;color:var(--muted);">3.5s</span>
+
+                <label style="font-size:0.9rem;color:var(--muted);">Music</label>
+                <input id="musicFile" type="file" accept="audio/*">
+                <button id="musicPlay" class="btn" style="width:auto;">Play</button>
+                <input id="volumeRange" type="range" min="0" max="1" step="0.01" value="0.6" style="width:90px">
+
+                <button id="prevBtn" class="btn" style="width:auto;">Prev</button>
+                <button id="nextBtn" class="btn" style="width:auto;">Next</button>
+
+                <button id="loopBtn" class="btn" style="width:auto;">Loop: On</button>
+                <button id="reverseBtn" class="btn" style="width:auto;">Direction: →</button>
+                <button id="captionsBtn" class="btn" style="width:auto;">Captions: On</button>
+                <button id="downloadBtn" class="btn" style="width:auto;">Download Slide</button>
+            </div>
+
+            <div id="thumbnails" class="thumbnails" style="margin-top:14px;display:flex;gap:8px;overflow-x:auto;padding:10px 2px;">
+                <!-- thumbnails injected here -->
+            </div>
+
+            <div style="margin-top:14px;text-align:center;color:var(--muted);font-size:0.9rem;">Tip: use ← → keys to navigate, Space to play/pause, F for fullscreen</div>
+        </main>
+    </div>
+
+    <script src="relive.js"></script>
+</body>
+</html>

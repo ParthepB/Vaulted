@@ -1,0 +1,75 @@
+/* Relive page specific styles */
+html,body,#reliveRoot { height: 100%; }
+.slideshow {
+  position: relative;
+  height: 60vh;
+  min-height: 320px;
+  background: linear-gradient(135deg,#eaeaea,#f7f7f7);
+  border-radius: 12px;
+  overflow: hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.slide {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 900ms ease, transform 900ms ease;
+  display:flex;
+  align-items:flex-end;
+}
+
+.slide.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.slide .meta {
+  width:100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 100%);
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.slide .meta h3 { margin:0 0 6px 0; font-size:1.4rem; }
+.slide .meta p { margin:0; font-size:0.95rem; opacity:0.95 }
+
+/* Enter/exit effects we will toggle via JS */
+.effect-fade { transition: opacity 900ms ease; }
+.effect-slide-left { transform-origin: left center; }
+.effect-slide-left.show { transform: translateX(0); }
+.effect-slide-right { transform-origin: right center; }
+.effect-zoom-in { transform-origin: center center; }
+
+/* small controls responsiveness */
+@media (max-width: 599px) {
+  .slideshow { height: 50vh; }
+  .slide .meta { padding: 14px; }
+}
+
+/* New relive styles */
+.relive-controls input[type="range"]{vertical-align:middle}
+.thumbnails{align-items:center}
+.thumbnail{min-width:110px;min-height:66px;border-radius:8px;overflow:hidden;flex:0 0 auto;cursor:pointer;position:relative;border:2px solid transparent}
+.thumbnail img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbnail .t-title{position:absolute;left:6px;bottom:6px;padding:6px 8px;background:rgba(0,0,0,0.35);color:#fff;border-radius:6px;font-size:0.82rem}
+.thumbnail.active{border-color:rgba(157,78,221,0.9);box-shadow:0 6px 18px rgba(157,78,221,0.08)}
+
+/* Ken Burns animations */
+@keyframes kb-zoom-in { from { transform: scale(1.06) translateY(0);} to { transform: scale(1) translateY(-3%);} }
+@keyframes kb-zoom-out { from { transform: scale(1) translateY(0);} to { transform: scale(1.06) translateY(3%);} }
+@keyframes kb-pan-left { from{ transform: translateX(6%) scale(1.04);} to{ transform: translateX(0) scale(1);} }
+@keyframes kb-pan-right { from{ transform: translateX(-6%) scale(1.04);} to{ transform: translateX(0) scale(1);} }
+.kb-zoom-in.show{ animation: kb-zoom-in var(--kb-duration,6s) ease forwards; }
+.kb-zoom-out.show{ animation: kb-zoom-out var(--kb-duration,6s) ease forwards; }
+.kb-pan-left.show{ animation: kb-pan-left var(--kb-duration,6s) ease forwards; }
+.kb-pan-right.show{ animation: kb-pan-right var(--kb-duration,6s) ease forwards; }
+
+.slide .meta{ transition: transform 300ms ease, opacity 300ms ease }
+.captions-hidden .slide .meta{ opacity:0; transform: translateY(10px) }
